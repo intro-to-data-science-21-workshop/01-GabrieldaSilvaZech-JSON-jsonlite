@@ -1,0 +1,46 @@
+---
+title: "Practical Session: working with jsonlite"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# https://hendrikvanb.gitlab.io/2018/07/nested_data-json_to_tibble/
+# https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2
+# https://robotwealth.com/how-to-wrangle-json-data-in-r-with-jsonlite-purr-and-dplyr/
+```
+
+```{r}
+
+```
+
+## Load necessary packages
+
+```{r}
+library(jsonlite)
+```
+
+<br/>
+
+## Reading JSON data with `fromJSON()`
+
+<br/>
+
+### Simplification: *when JSON arrays get converted to other R classes*
+
+Depending on how the JSON array is structured, fromJSON() automatically converts the array from a list into a specific R class.
+
+<br/>
+
+#### Array of primitives (strings, numbers, booleans or null) 
+
+When the JSON data is in the form of an array of strings, numbers, booleans or nulls (i.e. *primitives*), `fromJSON` converts it into a **vector** by default
+
+```{r}
+json_data <- '["Francesco", "Gabriel", "Simon", "Lisa"]'
+fromJSON(json_data)
+```
+
+<br/>
+
+

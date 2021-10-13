@@ -1,0 +1,25 @@
+{
+    "students": [
+        { 
+            "id":"014789", 
+            "firstname": "Francesco", 
+            "lastname": "Danovi"
+        }, 
+        { 
+            "id":"023657", 
+            "firstname": "Gabriel", 
+            "lastname": "da Silva Zech" 
+        }
+    ],
+    
+    "teachers": ["Simon Munzer", "Lisa Oswald"],
+    
+    "ages_students_teachers": [[23, 24],
+                               [27, 33]],
+    
+    "university": {
+        "name": "Hertie School of Governance",
+        "location": "Berlin",
+        "coordinates": [52.51297066351335, 13.389164312650935]
+    }
+}
