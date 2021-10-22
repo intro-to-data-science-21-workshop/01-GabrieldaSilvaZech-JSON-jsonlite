@@ -1,0 +1,376 @@
+---
+title: "Recorded Session: working with JSON and jsonlite"
+output: 
+  html_document:
+    number_sections: true
+    df_print: paged
+    toc: true
+    toc_float: true
+    css: custom.css 
+    includes:
+      after_body: footer.html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# https://hendrikvanb.gitlab.io/2018/07/nested_data-json_to_tibble/
+# https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2
+# https://robotwealth.com/how-to-wrangle-json-data-in-r-with-jsonlite-purr-and-dplyr/
+## https://themockup.blog/posts/2020-05-22-parsing-json-in-r-with-jsonlite/
+# https://tidyr.tidyverse.org/articles/rectangle.html
+# xaringan::inf_mr()
+```
+
+<br/>
+
+```{r, message=FALSE}
+# load necessary packages
+library(tidyverse)
+library(jsonlite)
+library(listviewer)
+```
+
+<br/>
+
+# **How do JSON strings look like anyways?**
+
+Let's take a look at how a typical JSON file might look like.
+
+```{r}
+# print contents of the JSON file "students_data.json"
+cat(paste0(readLines("data/students_data.json", warn=FALSE), collapse="\n"))
+```
+
+<br/>
+
+# **Understanding how JSON files are read with `jsonlite`**
+
+First, let's load the same JSON file with jsonlite's [`fromJSON()`](https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/toJSON,%20fromJSON) function. 
+
+As you will see, the output features different types of data, such as data frames, vectors, matrices and lists.
+
+```{r}
+json_data <- fromJSON("data/students_data.json")
+json_data
+```
+
+<br/>
+
+## Why the different data types? The answer is *simple*
+
+JSON data usually gets converted into **lists** when it is read by `fromJSON()`.
+
+However, **this is not always the case**. Depending on how the JSON data is structured, `fromJSON()` automatically converts the array to other R classes.
+
+This process where JSON arrays automatically get converted from a list into a more specific R class is called **simplification**.
+
+There are **3 types** of JSON arrays that get converted to different R classes by default: 
+
+- arrays of **primitives**
+- arrays of **objects**
+- arrays of **arrays**
+
+*Hint: you can identify `arrays` through blockquotes `[]`.*
+
+Let's take a closer look at these.
+
+<br/>
+
+### R `vectors` are created from JSON `arrays of primitives` (strings, numbers, booleans or null)
+
+<br/>
+
+The `teachers` element in the JSON file is an **array of primitives**. "Primitives" are either `strings`, `numbers`, `booleans` or `null` values (they are named so because they are the simplest elements available in a programming language).
+
+> "teachers": ["Simon Munzer", "Lisa Oswald"]
+
+Why? It has 
+
+- `Primitives` i.e. strings separated by commas `,` 
+- all within blockquotes `[]`
+
+These get converted to a R `vector` by default. See again:
+
+```{r}
+json_data["teachers"] # output is a R vector
+```
+
+
+<br/>
+
+### R `data frames` are created from JSON `arrays of objects` (key-value pairs)
+
+<br/>
+
+The `students` element in the JSON file is an **array of objects**.
+
+> "students": [
+        { 
+            "id":"014789", 
+            "name": "Francesco", 
+            "lastname": "Danovi"
+        }, 
+        { 
+            "id":"023657", 
+            "name": "Gabriel", 
+            "lastname": "da Silva Zech" 
+        }
+    ]
+
+Why? It has 
+
+- `Objects` i.e. key-value pairs separated by commas `,`
+- within curly brackets `{}` that are also separated by commas `,`
+- all within blockquotes `[]`. 
+
+These get converted to a R `data frame` by default. See again:
+
+```{r}
+json_data["students"] # output is a R data frame
+```
+
+<br/>
+
+### R `matrices` are created from JSON `arrays of arrays` (equal-length sub-arrays)
+
+<br/>
+
+The `ages_students_teachers` element in the JSON file is an **array of arrays**.
+
+> "ages_students_teachers": [[23, 24],
+                             [27, 33]]
+
+Why? It has 
+
+- `Arrays` i.e. numbers separated by commas `,` within blockquotes `[]`
+- next to other **equal length** `arrays` separated by commas `,`
+- all within blockquotes `[]`. 
+
+These get converted to a R `matrix` by default. See again:
+
+```{r}
+json_data["ages_students_teachers"] # output is a R matrix
+```
+
+<br/>
+
+## How and why to prevent automatic simplification
+
+It is possible, however, to disable this automatic simplification. This can be done by passing `simplifyVector = FALSE` to the `fromJSON()` function.
+
+This will make sure all values are returned as **lists**.
+
+```{r}
+# array of primitives
+fromJSON('["Simon Munzer", "Lisa Oswald"]')
+fromJSON('["Simon Munzer", "Lisa Oswald"]', simplifyVector = FALSE)
+```
+
+<br/>
+
+
+```{r}
+# array of objects
+fromJSON('[{ "id":"023657", "name": "Gabriel", "lastname": "da Silva Zech" }]')
+fromJSON('[{ "id":"023657", "name": "Gabriel", "lastname": "da Silva Zech" }]', simplifyVector = FALSE)
+```
+
+<br/>
+
+```{r}
+# array of arrays
+fromJSON('[[23, 24], [27, 33]]')
+fromJSON('[[23, 24], [27, 33]]', simplifyVector = FALSE)
+```
+
+<br/>
+
+**Why is knowing this relevant?**
+
+Having all your data organised in lists instead of a mixture of lists, vectors, data frames and matrices is beneficial because it will allow you to **work more consistently** with a few number of helper functions.
+
+Don't take my word for it. You can take Hadley Wickham's, the guy behind tidyverse - it has been [reported](https://themockup.blog/posts/2020-05-22-parsing-json-in-r-with-jsonlite/) that when he works with the jsonlite package, he prefers to read JSON files without simplifying them.
+
+<br/>
+
+## Reading newline-delimited JSON files
+
+A slight variation of the JSON format is the [newline-delimited JSON (aka ndjson)](http://ndjson.org/) format. 
+
+In this format, each line is a JSON element in itself. This allows one to read individual elements without having to parse the entire file, which is helpful in certain use cases such as reading log files.
+
+![JSON on the left, ndjson on the right (credit: [Jaga Santagostino](https://medium.com/@kandros/newline-delimited-json-is-awesome-8f6259ed4b4b))](presentation_files/images/comparison_json_ndjson.png)
+
+<br/>
+ 
+This is important to know because `fromJSON()` will through the error `parse error: trailing garbage` when trying to read a ndjson file.
+ 
+> fromJSON("data/yelp_academic_dataset_business.json")
+> 
+> Error in parse_con(txt, bigint_as_char) : parse error: trailing garbage: true}, "type": "business"} {"business_id": "UsFtqoBl7naz8A (right here) ------^
+
+This is where jsonlite's `stream_in()` function for reading ndjson comes in ([documentation](https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/stream_in,%20stream_out)). It is especially useful because it allows us to read specific lines of a ndjson file without having to parse the entire document.
+
+Let's use it to read the first 500 lines of a dataset containing information on businesses on the Yelp platform ([source](https://www.kaggle.com/yelp-dataset/yelp-dataset)).
+
+```{r}
+# read the first 500 lines of the ndjson file
+yelp_list <- stream_in(textConnection(readLines("data/yelp_academic_dataset_business.json", n=500)), simplifyVector = FALSE)
+
+# alternatively, the code below reads the entire file:
+# yelp_list <- stream_in(file("data/yelp_academic_dataset_business.json"), simplifyVector = FALSE) 
+
+# print the information for the first business
+str(yelp_list[[1]])
+
+```
+
+<br/>
+
+# **Transforming JSON data into tidy data sets**
+
+<br/>
+
+## The art and craft of *rectangling*
+
+As explained in [this very helpful tidyr article](https://tidyr.tidyverse.org/articles/rectangle.html), "rectangling is the art and craft of taking a deeply nested list (often sourced from wild caught JSON or XML) and taming it into a tidy data set of rows and columns".
+
+The most important functions for rectangling are:
+
+- `unnest_longer()` takes each element of a list-column and makes a new **row**
+- `unnest_wider()` takes each element of a list-column and makes a new **column**
+- `hoist()` is similar to `unnest_wider()` but only plucks out selected components, and can reach down multiple levels
+
+So let's start using them.
+
+<br/>
+
+## Using `hoist()` to select desired columns
+
+The function `hoist()` is very handy as it allows us to pluck out only specific elements within (deeply) nested lists.
+
+```{r}
+# convert imported JSON data to a tibble with "business_info" as column name
+yelp_df <- tibble(business_info = yelp_list)
+
+# select desired elements
+yelp_df <- yelp_df %>% 
+  hoist(business_info, # unused sub-lists remain as last column in data frame
+        "name",
+        "city",
+        "neighborhood" = list("neighborhoods", 1), # selects first element in "neighborhoods" list, similar to [["neighborhoods"]][[1]]
+        "hours")
+
+yelp_df
+
+```
+<br/>
+
+## Using `unnest_longer()` to unnest lists into new rows
+
+Let's take a look at the `hours` column.
+
+```{r}
+str(yelp_df[['hours']][[1]])
+```
+
+<br/>
+
+First, we want to have a column named `day`` where each row will be a day of the week. This means the table will grow **longer** with each row being a day of the week.
+
+```{r}
+yelp_df <- yelp_df %>%
+  unnest_longer(hours) %>%
+  rename("day" = hours_id)
+
+yelp_df
+```
+
+<br/>
+
+## Using `unnest_wider()` to unnest lists into new columns
+
+Now that we have new rows with each day of the week, we want to put the information on the closing and opening time on a column each. This will make the table grow **wider** with two new columns, but no new rows will be created.
+
+```{r}
+yelp_df <- yelp_df %>%
+  unnest_wider(hours)
+
+yelp_df
+```
+
+<br/>
+
+# **Exporting data to JSON file with `toJSON()`**
+
+Exporting data to a JSON file is very simple. First we have to transform the data (e.g. the data frame) into a JSON string with `toJSON()`. Then we write it to file with `write()`.
+
+```{r}
+# select first row to export
+yelp_export <- head(yelp_df, 1)
+
+# 
+toJSON(yelp_export)
+```
+
+<br/>
+
+The `toJSON()` function has a bunch of arguments to define how the output should be encoded (see [documentation](https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/toJSON,%20fromJSON). 
+
+For instance, when the argument `pretty` is set to `True` it adds indentation whitespace to make JSON strings more readable by humans.
+
+```{r}
+toJSON(yelp_export, pretty = T)
+```
+
+
+ 
+ ####################################################################################################################
+ 
+
+Here we can see that the ``hours`` element is a data frame, and upon inspection of that element, we see that there are another level of data frames within the ``hours`` element.
+
+
+```{r include=FALSE}
+#str(yelp$hours, max.level = 1)
+```
+
+Since we are here dealing with data frames within dataframes, we call these **nested data frames**.
+
+<br/>
+
+```{r include=FALSE}
+# yelp %>% 
+#   # equivalent to raw_json[["athletes"]][["athlete"]]
+#   # purrr::pluck("athletes", "athlete") %>% 
+#   # glimpse()
+#   select(name, hours) %>% 
+#   # flatten()
+#   unnest_longer(hours)
+```
+
+# **EXRAS**
+
+Make them nest something https://tidyr.tidyverse.org/reference/nest.html
+
+## *Flattening* nested dataframes
+
+If you do not turn off simplification by using `simplifyVector = FALSE` when importing JSON data, you can do something similar to `unnest()` by using jsonlite's [`flatten()`](https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/flatten).
+
+The difference is that `flatten()` specifies the names of the parent data frames in the flattened columns. This allows better tracking of the original structure of the JSON file.
+
+This can be useful if you want to quickly have all the data as columns (especially with `recursive = TRUE`) to then select only the desired columns.
+
+```{r}
+options(stringsAsFactors=FALSE)
+x <- data.frame(driver = c("Bowser", "Peach"), occupation = c("Koopa", "Princess"))
+x$vehicle <- data.frame(model = c("Piranha Prowler", "Royal Racer"))
+x$vehicle$stats <- data.frame(speed = c(55, 34), weight = c(67, 24), drift = c(35, 32))
+
+x # original data frame
+unnest(x) # unnests first level
+flatten(x, recursive = FALSE) # flattens only first level
+flatten(x) # flattens all levels
+
+```
+

@@ -1,0 +1,33 @@
+---
+title: 'Live Session: working with JSON and jsonlite'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+# inspect existing files in folder "data/"
+list.files("data/")
+```
+
+
+
+#################################################################
+
+## Viewing JSON contents with `listviewer`
+
+<br/>
+
+A more intuitive way of looking at the structure of a JSON file is by using the `listviewer::jsonedit()` function.
+
+It allows you to interactively dig deeper into the individual elements present in the JSON data.
+
+```{r eval=FALSE, include=FALSE}
+listviewer::jsonedit(yelp_list, height = "800px", mode = "view")
+```
+
+#################################################################
