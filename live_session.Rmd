@@ -1,18 +1,9 @@
 ---
 title: 'Live Session: working with JSON and jsonlite'
-output:
-  html_document:
-    number_sections: true
-    df_print: paged
-    toc: true
-    toc_float: true
-    css: custom.css 
-    includes:
-      after_body: footer.html
 ---
 
-
 ########################################################################################
+
 
 # 1. PREPARING YOUR WORKSPACE
 
