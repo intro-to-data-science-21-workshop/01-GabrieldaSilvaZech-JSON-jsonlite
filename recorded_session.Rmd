@@ -212,16 +212,6 @@ Let's use it to read the first 500 lines of a dataset containing information on 
 # read the first 500 lines of the ndjson file
 yelp_list <- stream_in(textConnection(readLines("data/yelp_academic_dataset_business.json", n=500)), simplifyVector = FALSE)
 
-options(encoding = "utf8")
-write(toJSON(yelp_list, 
-             pretty=T, 
-             auto_unbox=T, 
-             encoding = "utf8",
-             factor = "string",
-             na = "null",
-             complex = 'string'),
-      "data/yelp_500_businesses.json")
-
 # alternatively, the code below reads the entire file:
 # yelp_list <- stream_in(file("data/yelp_academic_dataset_business.json"), simplifyVector = FALSE) 
 
@@ -272,7 +262,7 @@ Exporting data to a JSON file is very simple. First we have to transform the dat
 # select first row to export
 yelp_export <- head(yelp_df, 1)
 
-# 
+# create a JSON string
 toJSON(yelp_export)
 ```
 

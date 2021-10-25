@@ -468,17 +468,7 @@ yelp_list &lt;- stream_in(textConnection(readLines(&quot;data/yelp_academic_data
 <pre><code>## 
  Found 500 records...
  Imported 500 records. Simplifying...</code></pre>
-<pre class="r"><code>options(encoding = &quot;utf8&quot;)
-write(toJSON(yelp_list, 
-             pretty=T, 
-             auto_unbox=T, 
-             encoding = &quot;utf8&quot;,
-             factor = &quot;string&quot;,
-             na = &quot;null&quot;,
-             complex = &#39;string&#39;),
-      &quot;data/yelp_500_businesses.json&quot;)
-
-# alternatively, the code below reads the entire file:
+<pre class="r"><code># alternatively, the code below reads the entire file:
 # yelp_list &lt;- stream_in(file(&quot;data/yelp_academic_dataset_business.json&quot;), simplifyVector = FALSE) 
 
 # print the information for the first business
@@ -556,7 +546,7 @@ yelp_df</code></pre>
 <pre class="r"><code># select first row to export
 yelp_export &lt;- head(yelp_df, 1)
 
-# 
+# create a JSON string
 toJSON(yelp_export)</code></pre>
 <pre><code>## [{&quot;name&quot;:&quot;Eric Goldberg, MD&quot;,&quot;city&quot;:&quot;Phoenix&quot;,&quot;close&quot;:&quot;17:00&quot;,&quot;open&quot;:&quot;08:00&quot;,&quot;day&quot;:&quot;Tuesday&quot;}]</code></pre>
 <p><br /></p>
