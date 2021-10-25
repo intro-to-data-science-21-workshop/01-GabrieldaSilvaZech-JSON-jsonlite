@@ -67,18 +67,6 @@ yelp_data <- ____("data/yelp_500_businesses.json",
 
 ```
 
-```{r}
-
-yelp_data <- fromJSON("data/yelp_500_businesses.json", 
-                  simplifyVector = F, 
-                  encoding = "utf8")
-
-# if you get an encoding error, run the code below
-# options(encoding = "utf8")
-# getOption("encoding")
-
-```
-
 
 ########################################################################################
 
@@ -127,18 +115,12 @@ The most important functions for rectangling are:
 First, let's convert the JSON data to a tibble.
 
 ```{r}
-# "____" will be the column name
-yelp_tibble <- tibble(____ = yelp_data)
-yelp_tibble
-```
 
-```{r}
-
-# "____" will be the column name
-yelp_tibble <- tibble(business_info = yelp_data)
+yelp_tibble <- tibble(____ = yelp_data) # "____" will be the column name
 yelp_tibble
 
 ```
+
 
 The we need to select some specific elements within the nested lists. The function `hoist()` is very handy here as it allows us to pluck out only the desired elements within (deeply) nested lists.
 
@@ -146,25 +128,11 @@ The we need to select some specific elements within the nested lists. The functi
 
 # use hoist() to select desired elements
 yelp_df <- yelp_tibble %>% 
-  hoist(____, # unused sub-lists remain as last column in data frame
-        "____",
+  hoist(____, # add name of parent column in original tibble
+        "____", # add desired sub-lists
         "____",
         "____" = list("____", 1), # selects first element in "____" list, similar to [["____"]][[1]]
         "hours")
-
-yelp_df
-
-```
-
-```{r}
-
-yelp_df <- yelp_tibble %>% 
-  hoist(business_info, # unused sub-lists remain as last column in data frame
-        "name",
-        "city",
-        "neighborhood" = list("neighborhoods", 1), # selects first element in "____" list, similar to [["____"]][[1]]
-        "hours"
-        )
 
 yelp_df
 
@@ -192,15 +160,6 @@ yelp_df1
 
 ```
 
-```{r}
-yelp_df1 <- yelp_df %>%
-  unnest_longer(hours) %>%
-  rename("___" = hours_id) # "___" is the new name of the column, instead of "hours_id"
-
-yelp_df1
-
-```
-
 
 Let's take a look at the `hours` column again to see what happened.
 
@@ -217,12 +176,6 @@ yelp_df2 <- yelp_df1 %>%
 yelp_df2
 ```
 
-```{r}
-yelp_df2 <- yelp_df1 %>%
-  unnest_wider(hours)
-
-yelp_df2
-```
 
 # 5. EXPORTING TO A .JSON FILE
 
@@ -232,22 +185,7 @@ First, let's select the desired columns from the dataframe.
 ```{r}
 
 yelp_df_export <- yelp_df2 %>%
-  select("___",
-         ) %>%
-  head(5)
-
-yelp_df_export
-
-```
-
-```{r}
-
-yelp_df_export <- yelp_df2 %>%
-  select("name",
-         "city",
-         "day",
-         "open",
-         "close"
+  select("___", # add desired columns
          ) %>%
   head(5)
 
