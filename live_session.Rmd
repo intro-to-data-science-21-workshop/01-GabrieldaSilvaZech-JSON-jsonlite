@@ -12,6 +12,10 @@ output:
 ---
 
 
+########################################################################################
+
+# 1. PREPARING YOUR WORKSPACE
+
 ```{r packages_install, eval=FALSE, include=FALSE}
 
 # run these to install the required packages for this session
@@ -28,13 +32,19 @@ install.packages("tidyverse")
 
 # load the packages
 library(tidyverse)
-library(jsonlite)
+library(jsonlite) # make sure to load this **after** loading tidyverse
 library(listviewer)
 
 ```
 
-We will be using some json files that should be found under the "data/" folder in this repository.
 
+########################################################################################
+
+
+# 2. IMPORTING THE JSON DATA
+
+
+We will be using some json files that should be found under the "data/" folder in this repository.
 
 ```{r}
 
@@ -70,13 +80,16 @@ yelp_data <- fromJSON("data/yelp_500_businesses.json",
 ```
 
 
-## Viewing JSON contents with `listviewer`
+########################################################################################
+
+
+# 3. VIEWING THE CONTENTS OF THE JSON FILE
 
 A quick but non-intuitive way of seeing the data is by using the `str()` function with `max.level` set to a pre-defined value to avoid printing out very long outputs.
 
 ```{r}
 
-str(yelp_data[[1]], max.level = 3)
+str(yelp_data[[1]], max.level = 1)
 
 ```
 
@@ -92,11 +105,13 @@ listviewer::jsonedit(yelp_data, height = "800px", mode = "view")
 
 ```
 
+########################################################################################
 
-# TRANSFORMING JSON DATA INTO TIDY TABLES
+
+# 4. TRANSFORMING JSON DATA INTO TIDY TABLES
 
 
-## The art and craft of rectangling
+## 4.1 The art and craft of rectangling
 
 As explained in this very helpful tidyr article (https://tidyr.tidyverse.org/articles/rectangle.html), "rectangling is the art and craft of taking a deeply nested list (often sourced from wild caught JSON or XML) and taming it into a tidy data set of rows and columns".
 
@@ -107,9 +122,15 @@ The most important functions for rectangling are:
 - `hoist()` is similar to `unnest_wider()` but only plucks out selected components, and can reach down multiple levels
 
 
-## Using `hoist()` to select desired columns
+## 4.2 Using `hoist()` to select desired columns
 
 First, let's convert the JSON data to a tibble.
+
+```{r}
+# "____" will be the column name
+yelp_tibble <- tibble(____ = yelp_data)
+yelp_tibble
+```
 
 ```{r}
 
@@ -119,8 +140,21 @@ yelp_tibble
 
 ```
 
-
 The we need to select some specific elements within the nested lists. The function `hoist()` is very handy here as it allows us to pluck out only the desired elements within (deeply) nested lists.
+
+```{r}
+
+# use hoist() to select desired elements
+yelp_df <- yelp_tibble %>% 
+  hoist(____, # unused sub-lists remain as last column in data frame
+        "____",
+        "____",
+        "____" = list("____", 1), # selects first element in "____" list, similar to [["____"]][[1]]
+        "hours")
+
+yelp_df
+
+```
 
 ```{r}
 
@@ -136,22 +170,8 @@ yelp_df
 
 ```
 
-```{r}
 
-# use hoist() to select desired elements
-yelp_df <- yelp_tibble %>% 
-  hoist(____, # unused sub-lists remain as last column in data frame
-        "____",
-        "____" = list("____", 1), # selects first element in "____" list, similar to [["____"]][[1]]
-        "hours")
-
-yelp_df
-
-```
-
-
-
-## Using `unnest_longer()` and `unnest_wider()` to unnest lists
+## 4.3 Using `unnest_longer()` and `unnest_wider()` to unnest lists
 
 Let's take a look at the `hours` column.
 
@@ -175,12 +195,11 @@ yelp_df1
 ```{r}
 yelp_df1 <- yelp_df %>%
   unnest_longer(hours) %>%
-  rename("day" = hours_id)
+  rename("___" = hours_id) # "___" is the new name of the column, instead of "hours_id"
 
 yelp_df1
 
 ```
-
 
 
 Let's take a look at the `hours` column again to see what happened.
@@ -205,7 +224,7 @@ yelp_df2 <- yelp_df1 %>%
 yelp_df2
 ```
 
-# EXPORTING TO A .JSON FILE
+# 5. EXPORTING TO A .JSON FILE
 
 First, let's select the desired columns from the dataframe.
 
@@ -220,8 +239,6 @@ yelp_df_export <- yelp_df2 %>%
 yelp_df_export
 
 ```
-
-
 
 ```{r}
 
@@ -243,8 +260,8 @@ Now let's convert it to a JSON element.
 
 ```{r}
 yelp_json <- toJSON(yelp_df_export,
-                    pretty=T, 
-                    auto_unbox=T)
+                    pretty=T,
+                    auto_unbox=T) # see EXTRAS below for more info on what 'unboxing" does
 
 yelp_json
 
@@ -258,24 +275,37 @@ write(yelp_json, "data/my_json_file.json")
 
 ```
 
+See if it worked:
+
+```{r}
+
+# inspect existing files in folder "data/"
+list.files("data/")
+
+```
 
 
-# Further readings:
-
-# https://hendrikvanb.gitlab.io/2018/07/nested_data-json_to_tibble/
-# https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2
-# https://robotwealth.com/how-to-wrangle-json-data-in-r-with-jsonlite-purr-and-dplyr/
-## https://themockup.blog/posts/2020-05-22-parsing-json-in-r-with-jsonlite/
-# https://tidyr.tidyverse.org/articles/rectangle.html
+########################################################################################
 
 
+# **6. EXTRAS**
 
- 
-####################################################################################################################
+## 6.1 Further readings:
 
-# **EXTRAS**
+Rectangling: https://tidyr.tidyverse.org/articles/rectangle.html
 
-## Working with atomic vectors / data frames of length 1
+Step-by-step tutorials on parsing JSON data with jsonlite and tidyverse:
+- https://themockup.blog/posts/2020-05-22-parsing-json-in-r-with-jsonlite/
+- https://hendrikvanb.gitlab.io/2018/07/nested_data-json_to_tibble/
+- https://robotwealth.com/how-to-wrangle-json-data-in-r-with-jsonlite-purr-and-dplyr/
+
+Documentation on jsonlite:
+- Functions: https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2
+- CRAN: https://cran.r-project.org/web/packages/jsonlite/index.html
+
+
+
+## 6.2 Working with atomic vectors / data frames of length 1
 
 The jsonlite function `unbox()` prevents atomic vector of length 1 or data frames with only 1 row turning into an `array` when encoded into JSON. 
 
@@ -299,7 +329,9 @@ fromJSON((x_unboxed), simplifyVector = F)
 
 ```
 
-## Flattening nested dataframes
+
+
+## 6.3 Flattening nested dataframes
 
 If you do not turn off simplification by using `simplifyVector = FALSE` when importing JSON data, you can do something similar to `unnest()` by using jsonlite's `flatten()` (https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/flatten).
 
@@ -321,3 +353,5 @@ flatten(x, recursive = FALSE) # flattens only first level
 flatten(x) # flattens all levels
 
 ```
+
+########################################################################################
