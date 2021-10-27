@@ -1,0 +1,174 @@
+---
+title: "Jsonbasics"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r packages_install, eval=FALSE, include=FALSE}
+install.packages("knitr")
+install.packages("rmarkdown")
+install.packages('jsonlite')
+library(knitr)
+library(rmarkdown)
+library(jsonlite)
+```
+## JSON
+
+JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language Standard. 
+
+JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others. These properties make JSON an ideal data-interchange language.
+
+## Why use JSON?
+Here are the important benefits/ pros of using JSON:
+
+- Provide support for all browsers
+- Easy to read and write
+- Straightforward syntax
+- You can natively parse in JavaScript using eval() function
+- Easy to create and manipulate
+- Supported by all major JavaScript frameworks
+- Supported by most backend technologies
+- JSON is recognized natively by JavaScript
+- It allows you to transmit and serialize structured data using a network connection.
+- You can use it with modern programming languages.
+
+## History of JSON
+Here are important landmarks that form the history of JSON:
+
+- Douglas Crockford specified the JSON format in the early 2000s.
+- The official website was launched in 2002.
+- In December 2005, Yahoo! starts offering some of its web services in JSON.
+- JSON became an ECMA international standard in 2013.
+- The most updated JSON format standard was published in 2017.
+
+## Structure
+JSON is built on two structures:
+
+- A collection of name/value pairs. In various languages, this is realized as an object, record, struct, dictionary, hash table, keyed list, or associative array.
+- An ordered list of values. In most languages, this is realized as an array, vector, list, or sequence.
+
+These are universal data structures. Virtually all modern programming languages support them in one form or another. It makes sense that a data format that is interchangeable with programming languages also be based on these structures.
+In JSON, they have the following rules:
+
+
+## Rules for JSON Syntax
+
+Rules for JSON syntax are:
+
+- Data should be in name/value pairs
+- Data should be separated by commas
+- Curly braces should hold objects
+- Square brackets hold arrays
+
+## Data types in JSON 
+|    Data Type   |Description | 
+|:------|:-----|
+| Number | It includes real number, integer or a floating number. |
+| String | It consists of any text double-quoted with backslash escapement. |
+| Boolean | The Boolean data type represents either True or False values. |
+| Null | It denotes that the associated variable doesn’t have any value. |
+| Object | It is a collection of key-value pairs and always separated by a comma and enclosed in curly brackets. |
+| Array | It is an ordered sequence of values separated. |
+
+## Number:
+- The number is a double-precision floating-point format which depends on its implementation method.
+- In JSON you can’t use Hexadecimal and Octal formats.
+
+|  Type |Description | 
+|:------|:-----|
+| Integer | Number 1-9, and 0. Both positive and negative numbers. |
+| Fraction | Fractions like 3. |
+| Exponent | Exponent like e, e+. |
+
+Example:
+
+json-object-name = { string : number_value}
+obj = {salary: 2600}
+
+
+## String
+Series of double-quoted Unicode characters with backslash escaping.
+
+|  Type |Description | 
+|:------|:-----|
+| * | Use for double quotation typing. |
+| / | Use for solidus. |
+| \ | Use for reverse solidus. |
+| B | Use to add backspace. |
+| F | From feed. |
+| N | To create a new line. |
+| R | Use for carriage return. |
+| T | To show horizontal tab. |
+| U | Hexadecimal digits. |
+
+## 
+
+|  Type |Description | 
+|:------|:-----|
+| T | To show horizontal tab. |
+| U | Hexadecimal digits. |
+
+
+
+## Array
+
+- It is an ordered collection of values.
+- You should use an array when the key names are sequential integers.
+- It should be enclosed inside square brackets which should be separated by ‘,’ (comma)
+
+
+
+## JSON Object
+
+A **JSON Object** is an entity in JSON which is enclosed in curly brackets. It is written in the unordered set of name and value pairs in which the name should be followed by “:” (colon), and the name/value pairs need to be separated using “,” (comma). It can be used when key names are arbitrary strings.
+
+Syntax and example:
+
+{ string :  value, ….. }
+
+{
+"id": 110,
+"language": "Python",
+"price": 1900,
+}
+
+
+
+
+## Application of JSON
+
+- Helps you to transfer data from a server
+- Sample JSON file format helps in transmit and serialize all types of structured data.
+- Allows you to perform asynchronous data calls without the need to do a page refresh
+- Helps you to transmit data between a server and web applications.
+- It is widely used for JavaScript-based application, which includes browser extension and websites.
+- You can transmit data between the server and web application using JSON.
+- We can use JSON with modern programming languages.
+- It is used for writing JavaScript-based applications that include browser add-ons.
+
+
+## What is JSON not?
+
+- Sample JSON data file is not a document format.
+- It is not a markup language.
+- JSON does not provide a general serialization format.
+- It is not recurring or cyclical structures.
+- It is also not an invisible structure.
+
+## Disadvantages of JSON
+
+Here are few advantages of JSON:
+
+- No namespace support, hence poor extensibility
+- Limited development tools support
+- No support for formal grammar definition
+
+## Sources
+
+Those are the main sources used for the project:
+
+- https://www.guru99.com/json-tutorial-example.html
+- https://www.json.org/json-en.html 
