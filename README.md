@@ -7,11 +7,11 @@ This repository provides materials for a session that is part of the [I2DS Tools
 
 ### Session contents
 
-This session will introduce you to JSON data formats and working with these using the jsonlite package for R. JSON is a type of data that allows users to transmit and serialize structured data (e.g. between a server and web applications) in a human readable syntax. The jsonlite package provides useful functions to read, prepare and export that data in a consistent way in R.
+This session will introduce you to JSON data formats and working with these using the jsonlite package for R. JSON is a type of data that allows users to transmit and serialize structured data (e.g. between a server and web applications) in a more human readable syntax. The jsonlite package provides useful functions to read, prepare and export that data in a consistent way in R.
 
 ### Main learning objectives
 
-The goals of this session are to (1) equip you with conceptual knowledge about the JSON data, (2) show you the main functions of the jsonlite package, and (3) show you how to use jsonlite and other tidyverse packages to transform JSON data into tidy data frames to use in data analysis.
+The goals of this session are to (1) equip you with conceptual knowledge about JSON data, (2) show you the working of and the main functions of the jsonlite package, and (3) show you how to use jsonlite and other tidyverse packages to transform JSON data into tidy data frames (e.g. to use in data analysis).
 
 
 ## Instructors
@@ -34,6 +34,6 @@ The material in this repository is made available under the [MIT license](http:/
 
 ## Statement of contributions
 
-**Francesco Danovi** prepared the theoretical slides, part of the recording, the post-processed the recording and support in the live session.
+**Francesco Danovi** prepared the theoretical slides (on JSON data), part of the recording, the post-processing of the recording and support during the live session.
 
-**Gabriel da SIlva Zech** prepared the practical slides, part of the recording, the materials for the live session and its walkthrough.
+**Gabriel da Silva Zech** prepared the practical slides (on jsonlite), part of the recording, the materials for the live session and the walkthrough of the code during the live session.
