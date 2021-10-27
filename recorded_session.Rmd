@@ -204,16 +204,13 @@ This is important to know because `fromJSON()` will through the error `parse err
 > 
 > Error in parse_con(txt, bigint_as_char) : parse error: trailing garbage: true}, "type": "business"} {"business_id": "UsFtqoBl7naz8A (right here) ------^
 
-This is where jsonlite's `stream_in()` function for reading ndjson comes in ([documentation](https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/stream_in,%20stream_out)). It is especially useful because it allows us to read specific lines of a ndjson file without having to parse the entire document.
+This is where jsonlite's [`stream_in()`](https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/stream_in,%20stream_out) function for reading ndjson comes in. It is especially useful because it allows us to read specific lines of a ndjson file without having to parse the entire document.
 
 Let's use it to read the first 500 lines of a dataset containing information on businesses on the Yelp platform ([source](https://www.kaggle.com/yelp-dataset/yelp-dataset)).
 
 ```{r}
 # read the first 500 lines of the ndjson file
 yelp_list <- stream_in(textConnection(readLines("data/yelp_academic_dataset_business.json", n=500)), simplifyVector = FALSE)
-
-options(encoding = "utf8")
-write(toJSON(yelp_list, pretty=T, auto_unbox=T, encoding = "utf8"), "data/yelp_500_businesses.json")
 
 # alternatively, the code below reads the entire file:
 # yelp_list <- stream_in(file("data/yelp_academic_dataset_business.json"), simplifyVector = FALSE) 
@@ -259,19 +256,19 @@ yelp_df
 
 # **Exporting data to JSON file with `toJSON()`**
 
-Exporting data to a JSON file is very simple. First we have to transform the data (e.g. the data frame) into a JSON string with `toJSON()`.
+Exporting data to a JSON file is very simple. First we have to transform the data (e.g. the data frame) into a JSON string with [`toJSON()`](https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/toJSON,%20fromJSON).
 
 ```{r}
 # select first row to export
 yelp_export <- head(yelp_df, 1)
 
-# 
+# create a JSON string
 toJSON(yelp_export)
 ```
 
 <br/>
 
-The `toJSON()` function has a bunch of arguments to define how the output should be encoded (see [documentation](https://www.rdocumentation.org/packages/jsonlite/versions/1.7.2/topics/toJSON,%20fromJSON)). 
+The `toJSON()` function has a bunch of arguments to define how the output should be encoded. 
 
 For instance, when the argument `pretty` is set to `True` it adds indentation whitespace to make JSON strings more readable by humans.
 

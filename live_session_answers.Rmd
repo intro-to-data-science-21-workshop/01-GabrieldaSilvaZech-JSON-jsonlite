@@ -1,9 +1,18 @@
 ---
 title: 'Live Session: working with JSON and jsonlite'
+output:
+  html_document:
+    number_sections: true
+    df_print: paged
+    toc: true
+    toc_float: true
+    css: custom.css 
+    includes:
+      after_body: footer.html
 ---
 
-########################################################################################
 
+########################################################################################
 
 # 1. PREPARING YOUR WORKSPACE
 
@@ -48,8 +57,8 @@ Load the data file with information on 500 businesses on the Yelp platform:
 
 ```{r}
 
-yelp_data <- ____("data/yelp_500_businesses.json", 
-                  simplifyVector = _, 
+yelp_data <- fromJSON("data/yelp_500_businesses.json", 
+                  simplifyVector = F, 
                   encoding = "utf8")
 
 # if you get an encoding error, run the code below
@@ -107,23 +116,23 @@ First, let's convert the JSON data to a tibble.
 
 ```{r}
 
-yelp_tibble <- tibble(____ = yelp_data) # "____" will be the column name
+# "____" will be the column name
+yelp_tibble <- tibble(business_info = yelp_data)
 yelp_tibble
 
 ```
-
 
 The we need to select some specific elements within the nested lists. The function `hoist()` is very handy here as it allows us to pluck out only the desired elements within (deeply) nested lists.
 
 ```{r}
 
-# use hoist() to select desired elements
 yelp_df <- yelp_tibble %>% 
-  hoist(____, # add name of parent column in original tibble
-        "____", # add desired sub-lists
-        "____",
-        "____" = list("____", 1), # selects first element in "____" list, similar to [["____"]][[1]]
-        "hours")
+  hoist(business_info, # unused sub-lists remain as last column in data frame
+        "name",
+        "city",
+        "neighborhood" = list("neighborhoods", 1), # selects first element in "____" list, similar to [["____"]][[1]]
+        "hours"
+        )
 
 yelp_df
 
@@ -162,21 +171,23 @@ Now that we have new rows with each day of the week, we want to put the informat
 
 ```{r}
 yelp_df2 <- yelp_df1 %>%
-  unnest_(hours)
+  unnest_wider(hours)
 
 yelp_df2
 ```
-
 
 # 5. EXPORTING TO A .JSON FILE
 
 First, let's select the desired columns from the dataframe.
 
-
 ```{r}
 
 yelp_df_export <- yelp_df2 %>%
-  select("___", # add desired columns
+  select("name",
+         "city",
+         "day",
+         "open",
+         "close"
          ) %>%
   head(5)
 
