@@ -16,8 +16,8 @@ The goals of this session are to (1) equip you with conceptual knowledge about t
 
 ## Instructors
 
-- Francesco Danovi ([website](https://github.com/fradanov),
-- Gabriel da Silva Zech ([website](https://github.com/GabZech)
+- Francesco Danovi ([website](https://github.com/fradanov))
+- Gabriel da Silva Zech ([website](https://github.com/GabZech))
 
 
 ## Further resources
