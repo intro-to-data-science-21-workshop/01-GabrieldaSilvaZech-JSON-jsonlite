@@ -60,7 +60,7 @@ Rules for JSON syntax are:
 
 - Data should be in name/value pairs
 - Data should be separated by commas
-- Curly braces should hold objects
+- Curly brackets should hold objects
 - Square brackets hold arrays
 
 ## Data types in JSON 
@@ -160,7 +160,7 @@ Syntax and example:
 
 ## Disadvantages of JSON
 
-Here are few advantages of JSON:
+Here are few disadvantages of JSON:
 
 - No namespace support, hence poor extensibility
 - Limited development tools support
