@@ -153,7 +153,7 @@ First, we want to have a column named `day` with all available days of the week 
 
 ```{r}
 yelp_df1 <- yelp_df %>%
-  unnest_(hours) %>%
+  unnest_longer(hours) %>%
   rename("day" = hours_id)
 
 yelp_df1
